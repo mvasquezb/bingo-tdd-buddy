@@ -47,4 +47,70 @@ class Bingo {
     }
 }
 
+/**
+ * Generates a random bingo card
+ * Assumes a square card with an empty spot in the middle
+ */
+export class BingoCardGenerator {
+    constructor(size, numberSpan) {
+        if (size <= 1 && size % 2 == 0) {
+            throw new TypeError("Illegal card size. Must be > 1 and uneven");
+        }
+        if (numberSpan <= 0) {
+            throw new TypeError("Illegal column number span. Must be > 0");
+        }
+        this.size = size;
+        this.numberSpan = numberSpan;
+    }
+
+    generateCard() {
+        let card = [];
+        for (let row = 0; row < this.size; row++) {
+            let lower = row * this.numberSpan + 1;
+            let upper = (row + 1) * this.numberSpan;
+            let newRow = this._generateRow(row, this.size, lower, upper);
+            card.push(newRow)
+        }
+
+        return this._transposeCard(card);
+    }
+
+    _generateRow(rowNumber, size, lower, upper) {
+        let middle = Math.floor(size / 2);
+        let hasEmptyMiddle = rowNumber == middle;
+        let availableNumbers = [...Array(upper - lower + 1)].map((v, i) => {
+            return i + lower;
+        });
+        let row = [];
+        while (row.length != size) {
+            if (hasEmptyMiddle && row.length == middle) {
+                row.push(-1);
+                continue;
+            }
+            let index = Math.floor(Math.random() * availableNumbers.length);
+            let number = availableNumbers[index];
+            if (!row.includes(number)) {
+                row.push(number);
+                availableNumbers.splice(index, 1);
+            }
+        }
+        return row;
+    }
+
+    _transposeCard(card) {
+        let newCard = [];
+        for (let row = 0; row < card.length; row++) {
+            newCard.push([]);
+        };
+
+        for (let row = 0; row < card.length; row++) {
+            for (let col = 0; col < card.length; col++) {
+                newCard[col].push(card[row][col]);
+            };
+        };
+
+        return newCard;
+    }
+}
+
 export default Bingo;
