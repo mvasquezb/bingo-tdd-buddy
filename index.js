@@ -45,6 +45,10 @@ class Bingo {
         let numberSpan = this.allNumbers.length;
         return Math.floor(Math.random() * numberSpan);
     }
+
+    hasCalledNumber(number) {
+        return this.numbersCalled.has(number);
+    }
 }
 
 /**
@@ -110,6 +114,26 @@ export class BingoCardGenerator {
         };
 
         return newCard;
+    }
+}
+
+export class BingoCardVerifier {
+    constructor(bingo) {
+        this.bingo = bingo;
+    }
+
+    validateCard(card) {
+        for (let row = 0; row < card.length; row++) {
+            for (let col = 0; col < row.length; col++) {
+                if (row == col) {
+                    continue;
+                }
+                if (!this.bingo.hasCalledNumber(card[row][col])) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
 
