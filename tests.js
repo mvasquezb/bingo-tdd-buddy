@@ -54,11 +54,30 @@ export function testBingoCardWins() {
     return verifier.cardWins(card);
 }
 
+export function testBingoCardLoses() {
+    let size = 5;
+    let span = 15;
+    // Bingo numbers called (1 to 25 inclusive)
+    let bingoState = [
+        1, 2, 3, 4, 5, 
+        16, 17, 18, 19,
+        20, 31, 32, 33,
+        34, 35, 46, 47,
+        48, 49, 50, 62,
+        63, 64, 65, 66
+    ];
+    let card = convertBingoStateToCard(bingoState, size);
+    card[0][0] = 75;
+    let bingo = new Bingo(new Set(bingoState));
+    let verifier = new BingoCardVerifier(bingo);
+    return !verifier.cardWins(card);
+}
+
 function convertBingoStateToCard(bingoState, size) {
     let card = [];
-    for (let i = 0; i < bingoState.length / size; i++) {
-        let col = (i % size);
-        card.push(bingoState.slice(col * size, col + size));
+    for (let i = 0; i < size; i++) {
+        let start = i * size;
+        card.push(bingoState.slice(start, start + size));
     }
     return card;
 }
@@ -93,7 +112,9 @@ export function runTests() {
         testBingoWillCallValidNumberIfAvailable,
         testBingoWillReturnInvalidNumberAfterAllHaveCalled,
         testBingoCardGeneratesValidCard,
-        testBingoCardGeneratorThrows
+        testBingoCardGeneratorThrows,
+        testBingoCardWins,
+        testBingoCardLoses
     ];
     tests.forEach((test) => {
         let success = test();

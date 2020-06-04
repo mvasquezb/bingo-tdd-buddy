@@ -122,10 +122,11 @@ export class BingoCardVerifier {
         this.bingo = bingo;
     }
 
-    validateCard(card) {
+    cardWins(card) {
+        let middle = Math.floor(card.length / 2);
         for (let row = 0; row < card.length; row++) {
-            for (let col = 0; col < row.length; col++) {
-                if (row == col) {
+            for (let col = 0; col < card.length; col++) {
+                if (row == col && row == middle) {
                     continue;
                 }
                 if (!this.bingo.hasCalledNumber(card[row][col])) {
